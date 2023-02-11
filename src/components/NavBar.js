@@ -1,76 +1,70 @@
-import { useState, useEffect } from "react";
-import { Navbar, Nav, Container } from "react-bootstrap";
-import codeSVG from "../assets/img/codePng.svg";
-import instagramIcon from "../assets/img/instagram-icon.svg";
-import linkedinIcon from "../assets/img/linkedin-icon.svg";
-import githubIcon from "../assets/img/github-brands.svg";
+import React, { useState } from "react";
+import Navbar from "react-bootstrap/Navbar";
+import Nav from "react-bootstrap/Nav";
+import Container from "react-bootstrap/Container";
+import logo from "../Assets/logo.png";
 
-import { HashLink } from "react-router-hash-link";
-import { BrowserRouter as Router } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-const NavBar = () => {
-  const [activeLink, setActiveLink] = useState("home");
-  const [scrolled, setScrolled] = useState(false);
+import { AiOutlineHome, AiOutlineUser } from "react-icons/ai";
 
-  useEffect(() => {
-    const onScroll = () => {
-      if (window.scrollY > 50) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
+function NavBar() {
+  const [expand, updateExpanded] = useState(false);
+  const [navColour, updateNavbar] = useState(false);
 
-    window.addEventListener("scroll", onScroll);
+  function scrollHandler() {
+    if (window.scrollY >= 20) {
+      updateNavbar(true);
+    } else {
+      updateNavbar(false);
+    }
+  }
 
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const onUpdateActiveLink = (value) => {
-    setActiveLink(value);
-  };
+  window.addEventListener("scroll", scrollHandler);
 
   return (
-    <Router>
-      <Navbar expand="md" className={scrolled ? "scrolled" : ""}>
-        <Container>
-          <Navbar.Brand href="/">
-            <img src={codeSVG} alt="Logo" />
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav">
-            <span className="navbar-toggler-icon"></span>
-          </Navbar.Toggle>
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="ms-auto">
-              <Nav.Link
-                href="#home"
-                className={
-                  activeLink === "home" ? "active navbar-link" : "navbar-link"
-                }
-                onClick={() => onUpdateActiveLink("home")}
-              >
-                Home
+    <Navbar
+      expanded={expand}
+      fixed="top"
+      expand="md"
+      className={navColour ? "sticky" : "navbar"}
+    >
+      <Container>
+        <Navbar.Brand href="/" className="d-flex">
+          <img src={logo} className="img-fluid logo" alt="brand" />
+        </Navbar.Brand>
+        <Navbar.Toggle
+          aria-controls="responsive-navbar-nav"
+          onClick={() => {
+            updateExpanded(expand ? false : "expanded");
+          }}
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </Navbar.Toggle>
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="ms-auto" defaultActiveKey="#home">
+            <Nav.Item>
+              <Nav.Link as={Link} to="/" onClick={() => updateExpanded(false)}>
+                <AiOutlineHome style={{ marginBottom: "2px" }} /> Home
               </Nav.Link>
-            </Nav>
-            <span className="navbar-text">
-              <div className="social-icon">
-                <a href="https://www.linkedin.com/in/burakcihan61/">
-                  <img src={linkedinIcon} alt="" />
-                </a>
-                <a href="https://www.instagram.com/burakcihan.61/">
-                  <img src={instagramIcon} alt="" />
-                </a>
-                <a href="https://github.com/burakcihan61">
-                  <img src={githubIcon} alt="" />
-                </a>
-              </div>
-              <HashLink to="#connect"></HashLink>
-            </span>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-    </Router>
+            </Nav.Item>
+
+            <Nav.Item>
+              <Nav.Link
+                as={Link}
+                to="/about"
+                onClick={() => updateExpanded(false)}
+              >
+                <AiOutlineUser style={{ marginBottom: "2px" }} /> About
+              </Nav.Link>
+            </Nav.Item>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
-};
+}
 
 export default NavBar;
